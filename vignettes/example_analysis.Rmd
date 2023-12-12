@@ -69,6 +69,7 @@ library(dplyr)
 library(sf)
 library(tigris)
 library(purrr)
+library(beginr)
 ```
 
 ```{r}
@@ -127,6 +128,11 @@ mean_dft <- dft %>% group_by(county_fips_code) %>% summarize(across(everything()
 sum_cost <- function(a, b, c) {
   a + b + c
 }
+# total unemployment population: 
+Unem_pop <- function(a,b,c) {
+    (a+b)*c
+}
+test_mean_dft <- mean_dft %>% mutate(tot_unem_pop = pmap_dbl(list(funr_16, munr_16, total_pop), Unem_pop))
 mean_dft <- mean_dft %>%
   mutate(cost = pmap_dbl(list(mc_infant, mc_toddler, mc_preschool), sum_cost))
 mean_dft <- arrange(mean_dft, county_fips_code)
@@ -168,6 +174,15 @@ ggplot(data = correlation_matrix_long, aes(x = Var1, y = Var2, fill = value)) +
   )
 
 ```
+
+```{r fig.width=7, fig.height=5, echo=TRUE}
+# use the function chosen from the beginr package in github
+plt_test <- mean_dft %>% select(cost, funr_16, munr_16)
+beginr::plotpairs(plt_test)
+beginr::plottype()
+beginr::plothist(mean_dft$mc_toddler)
+```
+
 VIF check
 ```{r}
 # Exclude non-independent variables
@@ -280,6 +295,7 @@ ggplot(long_data, aes(x = value)) +
 
 ```
 
+
 ## model and results
 ```{r}
 colnames(mean_dft)
@@ -301,7 +317,7 @@ print(vif_model)
 
 ```
 
-based on the results using linear regression, it can be seen that the childcare cost is related to the race, unemployment rates by gender, poverty rate among families, and parental work status. Based on the map plot, WA have haigher costs compare to other states in US.
+based on the results using linear regression, it can be seen that the childcare cost is related to the race, unemployment rates by gender, poverty rate among families, and parental work status. Based on the map plot, WA have higher costs compare to other states in US.
 
 
 ## the function i used
