@@ -1,4 +1,20 @@
 # beginr
+### GitHub link to where the original R package came from: [link](https://github.com/pzhaonet/beginr)
+
+###URL to the deployed website in Part 1:
+[link](https://github.com/jhu-statprogramming-fall-2023/biostat777-project3-part1-YGAO0114.git)
+
+### Author: Peng Zhao & Yuan Gao
+
+### things I customized: 
+#### I use bootswatch to set a theme for my website
+#### I use bslib to set various color properties for the theme, ensuring a consistent and appealing design.   #####The bg property sets the background color to a light gray (#eaeaec), creating a neutral canvas.  
+#####The fg property defines the foreground color, in this case, a deep reddish-brown (#483233), which is typically used for text, ensuring good readability against the light background.   
+#####The code-bg property sets the background color for code blocks to a slightly different shade of gray (#eae6e6) to distinguish them from the rest of the content.    
+#####Lastly, the primary property sets the primary color for the theme to a dark brown (#402d20), which is often used for buttons, links, and other interactive elements, providing a visually appealing contrast 
+#### I add footer to my intro and news page.
+#### I set up a navigation bar (navbar) for a website or application. The background of the navbar is set to the primary color defined in the theme, creating a visually cohesive look. The navbar's structure is divided into left and right sections: on the left, there are links labeled 'Intro', 'Reference', and 'News', leading to readme.md, reference/index.html, and updates.md respectively. These provide easy navigation to different informational sections of the site. On the right side, there are options for 'Search' and a link to a GitHub page, offering functionality for users to search within the site and view the associated GitHub repository.
+
 
 <div class="figure">
 <img src="http://cranlogs.r-pkg.org/badges/grand-total/beginr" />
