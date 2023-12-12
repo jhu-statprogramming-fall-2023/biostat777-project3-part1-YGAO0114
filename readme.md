@@ -3,7 +3,7 @@
 GitHub link to where the original R package came from: [link](https://github.com/pzhaonet/beginr)
 
 URL to the deployed website in Part 1:
-[link](https://github.com/jhu-statprogramming-fall-2023/biostat777-project3-part1-YGAO0114.git)
+[link](https://jhu-statprogramming-fall-2023.github.io/biostat777-project3-part1-YGAO0114/)
 
 Author: Peng Zhao & Yuan Gao
 
