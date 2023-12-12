@@ -82,20 +82,20 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, b <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>, c <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">lmdf</span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   x y r.squared adj.r.squared  intercept     slope Std.Error.intercept</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 a b 0.9153234     0.9047388  0.2618207 1.0145905           0.6769719</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 a c 0.9674337     0.9633629 -1.5689800 1.2290323           0.4946774</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 b a 0.9153234     0.9047388  0.2295171 0.9021604           0.6391719</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 b c 0.8383119     0.8181008 -1.1118861 1.0788274           1.1036406</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 c a 0.9674337     0.9633629  1.4141384 0.7871508           0.3222272</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 c b 0.8383119     0.8181008  1.8085935 0.7770584           0.7614139</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   x y r.squared adj.r.squared   intercept     slope Std.Error.intercept</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 a b 0.9497671     0.9434880  0.05380225 1.0191131           0.5141542</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 a c 0.9327415     0.9243342 -0.78092082 1.0553870           0.6217132</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 b a 0.9497671     0.9434880  0.22613975 0.9319545           0.4854733</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 b c 0.9122958     0.9013327 -0.62460821 0.9981253           0.7009913</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 c a 0.9327415     0.9243342  1.06009256 0.8837910           0.4970337</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 c b 0.9122958     0.9013327  1.06720938 0.9140092           0.5935214</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Std.Error.slope t.intercept   t.slope Pr.intercept     Pr.slope</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      0.10910390   0.3867528  9.299305  0.709023557 1.456060e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      0.07972448  -3.1717238 15.415996  0.013160440 3.116501e-07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3      0.09701374   0.3590851  9.299305  0.728824309 1.456060e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4      0.16751097  -1.0074712  6.440339  0.343205209 2.003527e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5      0.05106065   4.3886373 15.415996  0.002321777 3.116501e-07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6      0.12065488   2.3753094  6.440339  0.044872999 2.003527e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      0.08286345   0.1046422 12.298705   0.91923568 1.777173e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      0.10019815  -1.2560789 10.532999   0.24452690 5.752794e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      0.07577664   0.4658129 12.298705   0.65376855 1.777173e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      0.10941644  -0.8910356  9.122261   0.39891469 1.677936e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      0.08390687   2.1328385 10.532999   0.06550284 5.752794e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      0.10019547   1.7980977  9.122261   0.10987197 1.677936e-05</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
