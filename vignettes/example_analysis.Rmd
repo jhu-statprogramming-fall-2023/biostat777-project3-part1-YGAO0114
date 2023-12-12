@@ -50,10 +50,40 @@ file_path <- "data/childcare_costs.csv"
 if (!file.exists(file_path)) {
   write.csv(childcare_costs, file_path, row.names = FALSE)
 }
+
+counties_file_path <- "data/counties.csv"
+if (!file.exists(counties_file_path)) {
+  write.csv(counties, counties_file_path, row.names = FALSE)
+}
 ```
 - Read in the data locally each time you knit/render.
 ```{r}
 df <- read.csv(file_path)
 ```
+
+## data exploration and preprocessing
+```{r}
+nrow(df)
+colnames(df)
+```
+```{r}
+cols <- c(
+    # unemployment related variables: female vs. male
+    'funr_16', 'munr_16', 
+    # Labor force participation rate of the female population aged 20 to 64 years old who have children under diff age group: under 6 vs. 6-17
+    'flfpr_20to64_under6', 'flfpr_20to64_6to17'
+    # 
+    )
+```
+
+
+```{r output = FALSE}
+library(ggplot2)
+library(maps)
+library(dplyr)
+```
+
+
+
 
 
