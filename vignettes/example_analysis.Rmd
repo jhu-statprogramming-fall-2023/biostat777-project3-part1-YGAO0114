@@ -15,7 +15,7 @@ in this part, I'll use the [TidyTuesday patient children cost  datasets](https:/
 - [data dictionary](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-05-09/readme.md#childcare_costscsv)
 
 ## research question
-question: How do social determinants of health influence the children medical costs? 
+question: How do demographic and socio-economic factors influence the median weekly cost of center-based childcare in different counties/states in America?
 
 ## loading the data
 ```{r}
@@ -62,28 +62,250 @@ df <- read.csv(file_path)
 ```
 
 ## data exploration and preprocessing
-```{r}
-nrow(df)
-colnames(df)
-```
-```{r}
-cols <- c(
-    # unemployment related variables: female vs. male
-    'funr_16', 'munr_16', 
-    # Labor force participation rate of the female population aged 20 to 64 years old who have children under diff age group: under 6 vs. 6-17
-    'flfpr_20to64_under6', 'flfpr_20to64_6to17'
-    # 
-    )
-```
-
-
-```{r output = FALSE}
+```{r echo=TRUE, results='hide'}
 library(ggplot2)
 library(maps)
 library(dplyr)
+library(sf)
+library(tigris)
+library(purrr)
 ```
 
+```{r}
+nrow(df)
+# head(df)
+# colnames(df)
+```
+here I selected the columns I'll use later for my analysis.
+
+```{r}
+# Selecting specific columns from the dataframe and performing group-wise summary
+dft <- df %>%
+    # Select relevant columns for analysis
+    select(
+        # FIPS code identifying counties
+        'county_fips_code', 
+        
+        # Unemployment rates by gender for population aged 16 or older
+        'funr_16', # Female unemployment rate
+        'munr_16', # Male unemployment rate
+        
+        # Labor force participation rates for women aged 20 to 64 with children in different age groups
+        'flfpr_20to64_under6', # With children under 6 years
+        'flfpr_20to64_6to17',  # With children aged 6 to 17 years
+        
+        # Poverty rate among families
+        'pr_f',
+        
+        # Total population count
+        'total_pop',
+        
+        # Population counts by race
+        'one_race_w', # White
+        'one_race_b', # Black
+        'one_race_i', # American Indian/Alaska Native
+        'one_race_a', # Asian
+        'one_race_h', # Hispanic/Latino
+        'one_race_other', # Other race
+
+        # Household counts with children, categorizing by parental work status
+        'h_6to17_both_work', # Both parents working
+        'h_6to17_fwork',     # Only female parent working
+        'h_6to17_mwork',     # Only male parent working
+        
+        # Households with single mothers and children in different age groups
+        'h_under6_single_m', # With children under 6 years
+        'h_6to17_single_m',  # With children aged 6 to 17 years
+        
+        # Median weekly cost of center-based care for children of different age groups
+        'mc_infant',    # Infant care
+        'mc_toddler',   # Toddler care
+        'mc_preschool'  # Preschool care
+    ) 
+
+mean_dft <- dft %>% group_by(county_fips_code) %>% summarize(across(everything(), mean, na.rm = TRUE))
+sum_cost <- function(a, b, c) {
+  a + b + c
+}
+mean_dft <- mean_dft %>%
+  mutate(cost = pmap_dbl(list(mc_infant, mc_toddler, mc_preschool), sum_cost))
+mean_dft <- arrange(mean_dft, county_fips_code)
+head(mean_dft)
+```
+Here performed a correlation analysis to explore the pairwise relationships between independent variables (demographic and socio-economic factors) and the dependent variable (cost of childcare).
+```{r fig.width=7, fig.height=5, echo=TRUE}
+library(car)
+library(corrplot)
+library(reshape2)
+
+summary(mean_dft)
+high_cost <- filter(mean_dft, cost > 450)
+data_for_correlation <- mean_dft[, -1]  # Excludes the first column (county_fips_code)
+correlation_matrix <- cor(data_for_correlation, use = "complete.obs")  # Handling missing values
+cost_correlations <- correlation_matrix["cost", ]
+cost_correlations
+# corrplot(correlation_matrix, method = "circle")
 
 
+# Reshaping the correlation matrix into a long format
+correlation_matrix_long <- melt(correlation_matrix)
+ggplot(data = correlation_matrix_long, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                       midpoint = 0, limit = c(-1,1), space = "Lab", 
+                       name="Correlation") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.title = element_text(size = 16, face = "bold"),
+        plot.subtitle = element_text(size = 12),
+        plot.caption = element_text(size = 8)) +
+  labs(
+    x = 'Variable 1', 
+    y = 'Variable 2', 
+    title = 'Correlation Matrix Using ggplot2',
+    subtitle = 'Visualization of Pairwise Correlation Coefficients',
+    caption = 'Source: Tidy Tuesday Dataset'
+  )
+
+```
+VIF check
+```{r}
+# Exclude non-independent variables
+independent_data <- mean_dft %>%
+    select(-cost, -mc_infant, -mc_toddler, -mc_preschool)  
+model <- lm(funr_16 ~ ., data = independent_data)  # Replace 'county_fips_code' with an appropriate variable if needed
+vif_values <- vif(model)
+print(vif_values)
+```
+
+plot the cost map for each couunty to compare.
+
+```{r echo=TRUE, results='hide'}
+# first check total cost 
+test <- mean_dft %>% select(county_fips_code, cost)
+# Download county and state boundaries
+counties <- counties(cb = TRUE)  
+states <- states(cb = TRUE)
+states$centroid <- st_centroid(states$geometry)
+states$abbr <- state.abb[match(states$NAME, state.name)]
+```
+
+```{r fig.width=7, fig.height=5, echo=TRUE}
+# Ensure FIPS is character type
+counties$fips <- as.character(counties$GEOID)  
+test$county_fips_code <- as.character(test$county_fips_code)
+map_data <- left_join(counties, test, by = c("fips" = "county_fips_code"))
+
+# plot
+ggplot() +
+  geom_sf(data = map_data, aes(fill = cost), color = NA) +
+  geom_sf(data = states, fill = NA, color = "black", size = 0.5) +
+  geom_text(data = states, aes(label = abbr, x = st_coordinates(centroid)[,1], y = st_coordinates(centroid)[,2]), check_overlap = TRUE, size = 3, color = "white") +
+  scale_fill_viridis_c(name = "Mean Cost", option = "C", direction = -1) +
+  labs(title = "Mean Value of Cost by County",
+       subtitle = "Comparison of Childcare Costs Across Different Counties",
+       caption = "Source: Childcare Cost Data | Map Data: US Census Bureau",
+       x = "Longitude",
+       y = "Latitude") +
+  coord_sf(xlim = c(-130, -60), ylim = c(25, 50), datum = NA) +
+  theme_minimal() +
+  theme(legend.position = "left",
+        plot.title = element_text(size = 14, face = "bold"),
+        plot.subtitle = element_text(size = 12),
+        plot.caption = element_text(size = 8))
+
+```
+
+```{r echo=TRUE, results='hide'}
+# fisrt check total cost 
+test_1 <- mean_dft %>% select(county_fips_code, mc_infant)
+# Download county and state boundaries
+counties <- counties(cb = TRUE)  
+states <- states(cb = TRUE)
+states$centroid <- st_centroid(states$geometry)
+states$abbr <- state.abb[match(states$NAME, state.name)]
+```
+
+```{r fig.width=7, fig.height=5, echo=TRUE}
+# Ensure FIPS is character type
+counties$fips <- as.character(counties$GEOID)  
+test_1$county_fips_code <- as.character(test_1$county_fips_code)
+map_data <- left_join(counties, test_1, by = c("fips" = "county_fips_code"))
+
+# plot
+ggplot() +
+  geom_sf(data = map_data, aes(fill = mc_infant), color = NA) +
+  geom_sf(data = states, fill = NA, color = "black", size = 0.5) +
+  geom_text(data = states, aes(label = abbr, x = st_coordinates(centroid)[,1], y = st_coordinates(centroid)[,2]), check_overlap = TRUE, size = 3, color = "white") +
+  scale_fill_viridis_c(name = "Mean Infant Cost", option = "C", direction = -1) +
+  labs(title = "Mean Value of Infant Cost by County",
+       subtitle = "Comparison of Childcare Costs Across Different Counties",
+       caption = "Source: Childcare Cost Data | Map Data: US Census Bureau",
+       x = "Longitude",
+       y = "Latitude") +
+  coord_sf(xlim = c(-130, -60), ylim = c(25, 50), datum = NA) +
+  theme_minimal() +
+  theme(legend.position = "right",
+        plot.title = element_text(size = 14, face = "bold"),
+        plot.subtitle = element_text(size = 12),
+        plot.caption = element_text(size = 8))
+```
+
+check the costs value distribution 
+```{r fig.width=7, fig.height=5, echo=TRUE}
+library(dplyr)
+library(tidyr)
+# Reshape the data to long format for faceting
+long_data <- mean_dft %>%
+  select(cost, mc_infant) %>%
+  pivot_longer(cols = everything(), names_to = "variable", values_to = "value")
+
+# Plot using ggplot2 with facet_wrap
+ggplot(long_data, aes(x = value)) +
+  geom_histogram(bins = 30, fill = "blue", alpha = 0.7) +
+  facet_wrap(~variable, scales = "free") +
+  labs(title = "Distribution of Total Cost and Infant Cost",
+       subtitle = "Comparative Analysis of Cost Distributions",
+       caption = "Source: Tidy Tuesday dataset",
+       x = "Cost Value",
+       y = "Frequency of Occurrence") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 14),
+    plot.caption = element_text(size = 8),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12)
+  )
+
+```
+
+## model and results
+```{r}
+colnames(mean_dft)
+model <- lm(cost ~ . - county_fips_code - mc_infant - mc_toddler - mc_preschool, data = mean_dft)
+summary(model)
+
+```
+```{r plot-result, fig.width=7, fig.height=5, echo=TRUE}
+# Residual plots
+plot(model)
+
+# Q-Q plot for normality
+qqnorm(residuals(model))
+qqline(residuals(model))
+
+# VIF to check for multicollinearity
+vif_model <- vif(model)
+print(vif_model)
+
+```
+
+based on the results using linear regression, it can be seen that the childcare cost is related to the race, unemployment rates by gender, poverty rate among families, and parental work status. Based on the map plot, WA have haigher costs compare to other states in US.
 
 
+## the function i used
+`select()`, `group_by()`, `mutate()`, `group_by()`, `filter()`,`arrange`
+
+different `geom_*()` functions from `ggplot2`: 
+`geom_sf()`, `geom_text()`,``geom_tile()`,`geom_histogram`
