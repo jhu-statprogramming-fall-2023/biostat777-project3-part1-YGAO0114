@@ -132,7 +132,7 @@ sum_cost <- function(a, b, c) {
 Unem_pop <- function(a,b,c) {
     (a+b)*c
 }
-test_mean_dft <- mean_dft %>% mutate(tot_unem_pop = pmap_dbl(list(funr_16, munr_16, total_pop), Unem_pop))
+test_mean_dft <- mean_dft %>% mutate(tot_unem_pop = pmap_int(list(funr_16, munr_16, total_pop), Unem_pop))
 mean_dft <- mean_dft %>%
   mutate(cost = pmap_dbl(list(mc_infant, mc_toddler, mc_preschool), sum_cost))
 mean_dft <- arrange(mean_dft, county_fips_code)
