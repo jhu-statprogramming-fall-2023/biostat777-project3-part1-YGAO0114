@@ -323,7 +323,7 @@ based on the results using linear regression, it can be seen that the childcare 
 
 
 ## the function i used
-`select()`, `group_by()`, `mutate()`, `group_by()`, `filter()`,`arrange`
+`select()`, `group_by()`, `mutate()`, `filter()`,`arrange`, `summarize()`
 
 purrr functions:
 `pmap_dbl`,`map`
