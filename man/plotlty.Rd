@@ -4,7 +4,7 @@
 \alias{plotlty}
 \title{A reminder for lty}
 \usage{
-plotlty(mylwd = 1)
+plotlty(mylwd = 2)
 }
 \arguments{
 \item{mylwd}{numeric. line width}

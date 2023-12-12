@@ -4,9 +4,20 @@
 \alias{dfplot2}
 \title{Plot a dataframe, one y against multiple xs}
 \usage{
-dfplot2(x, y, xlab = "x", ylab = "y", xlim = NULL, ylim = NULL,
-  mycol = NULL, mylty = NULL, xerror = NULL, yerror = NULL,
-  mycolerrorbar = NULL, mylegend = NULL)
+dfplot2(
+  x,
+  y,
+  xlab = "x",
+  ylab = "y",
+  xlim = NULL,
+  ylim = NULL,
+  mycol = NULL,
+  mylty = NULL,
+  xerror = NULL,
+  yerror = NULL,
+  mycolerrorbar = NULL,
+  mylegend = NULL
+)
 }
 \arguments{
 \item{x}{a vector  or a dataframe with the same length as x}

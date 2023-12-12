@@ -4,7 +4,7 @@
 \alias{plotpch}
 \title{A reminder for pch}
 \usage{
-plotpch(mycex = 5)
+plotpch(mycex = 2)
 }
 \arguments{
 \item{mycex}{cex}

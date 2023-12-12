@@ -4,8 +4,16 @@
 \alias{errorbar}
 \title{Display errorbars}
 \usage{
-errorbar(x, y, xupper = NULL, xlower = NULL, yupper = NULL,
-  ylower = NULL, col = "black", lty = 1)
+errorbar(
+  x,
+  y,
+  xupper = NULL,
+  xlower = NULL,
+  yupper = NULL,
+  ylower = NULL,
+  col = "black",
+  lty = 1
+)
 }
 \arguments{
 \item{x, y}{numeric vectors, the coordinates of points at which the error bar

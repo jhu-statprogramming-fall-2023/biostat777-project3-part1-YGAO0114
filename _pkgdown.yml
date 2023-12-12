@@ -1,0 +1,24 @@
+url: ~
+template:
+  bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    bg: "#eaeaec"
+    fg: "#483233"
+    code-bg: "#eae6e6"
+    primary: "#402d20"
+  components:
+    footer: pkgdown/includes/footer.html
+
+navbar:
+  bg: primary
+  structure:
+    left:  [intro, reference, news]
+    right: [search, github]
+  left:
+  - text: intro
+    href: readme.md
+  - text: reference
+    href: reference/index.html
+  - text: news
+    href: updates.md

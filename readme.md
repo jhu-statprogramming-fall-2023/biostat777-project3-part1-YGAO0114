@@ -1,3 +1,4 @@
+# beginr
 
 <div class="figure">
 <img src="http://cranlogs.r-pkg.org/badges/grand-total/beginr" />

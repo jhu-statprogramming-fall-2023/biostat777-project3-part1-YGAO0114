@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif&display=swap');
+body {
+  font-family: 'Hedvig Letters Serif', serif;
+}
+
+.navbar {
+  height: 70px !important;
+}
+
+.navbar .container-fluid {
+  height: 100%;
+}
+
+.navbar-brand, .navbar-nav .nav-link {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
