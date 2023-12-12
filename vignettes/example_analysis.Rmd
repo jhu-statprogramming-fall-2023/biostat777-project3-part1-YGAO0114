@@ -132,7 +132,9 @@ sum_cost <- function(a, b, c) {
 Unem_pop <- function(a,b,c) {
     (a+b)*c
 }
-test_mean_dft <- mean_dft %>% mutate(tot_unem_pop = pmap_int(list(funr_16, munr_16, total_pop), Unem_pop))
+test_fun <- function(x) {x*2}
+test_pur <- map(c(1,2,3), test_fun)
+test_mean_dft <- mean_dft %>% mutate(tot_unem_pop = pmap_dbl(list(funr_16, munr_16, total_pop), Unem_pop))
 mean_dft <- mean_dft %>%
   mutate(cost = pmap_dbl(list(mc_infant, mc_toddler, mc_preschool), sum_cost))
 mean_dft <- arrange(mean_dft, county_fips_code)
@@ -322,6 +324,9 @@ based on the results using linear regression, it can be seen that the childcare 
 
 ## the function i used
 `select()`, `group_by()`, `mutate()`, `group_by()`, `filter()`,`arrange`
+
+purrr functions:
+`pmap_dbl`,`map`
 
 different `geom_*()` functions from `ggplot2`: 
 `geom_sf()`, `geom_text()`,`geom_tile()`,`geom_histogram()`
