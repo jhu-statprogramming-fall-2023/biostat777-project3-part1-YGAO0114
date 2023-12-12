@@ -324,4 +324,4 @@ based on the results using linear regression, it can be seen that the childcare 
 `select()`, `group_by()`, `mutate()`, `group_by()`, `filter()`,`arrange`
 
 different `geom_*()` functions from `ggplot2`: 
-`geom_sf()`, `geom_text()`,``geom_tile()`,`geom_histogram`
+`geom_sf()`, `geom_text()`,`geom_tile()`,`geom_histogram()`
